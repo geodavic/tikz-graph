@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tikz graph</title>
+    <link
+      rel="stylesheet"
+      href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"
+    >
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+  <body>
+    <div class="col-sm-6 col-sm-offset-3">
+      <h2> TikZ Graph from Adjacency Matrix </h2> <a href="https://github.com/geodavic" target="blank_" style="float:right"> View source code </a>
+      <br>
+      <form id="tikz_form" method="post" action="http://localhost:5000/tikz_svg" target="output">
+        <fieldset>
+          <legend>Adjacency Matrix</legend>
+          <textarea style="width:100%; height:200px" name="adj_mat_txt" id="adj_mat_txt"></textarea>
+        </fieldset> 
+        
+        <br>
+          <label for="adj_mat_fmt">Format:</label>
+          <select name="adj_mat_fmt" id="adj_mat_fmt">
+            <option value="csv">csv</option>
+            <option value="mathematica">Mathematica array ({...})</option>
+            <option value="python">Python list ([...])</option>
+            <option value="np">Numpy array (np.array([...]))</option>
+          </select>
+
+
+        <br>
+        <br>
+
+       <fieldset class="col-xs-6">
+            <legend>Node style</legend>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Shape</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="nodestyle.shape" id="nodestyle.shape">
+                        <option value="circle">circle</option>
+                        <option value="rectangle">square</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Fill color</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="nodestyle.fill_color" id="nodestyle.fill_color">
+                        <option value="black">black</option>
+                        <option value="red">red</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Outline color</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="nodestyle.line_color" id="nodestyle.line_color">
+                        <option value="black">black</option>
+                        <option value="red">red</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Size</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="nodestyle.scale" placeholder="0.1" />
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+       <fieldset class="col-xs-6">
+            <legend>Line style</legend>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Directed</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="linestyle.directed" id="linestyle.directed">
+                        <option value="True">Yes</option>
+                        <option value="False">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Color</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="linestyle.color" id="linestyle.color">
+                        <option value="black">black</option>
+                        <option value="red">red</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Arrowhead location</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="linestyle.arrow_mark_location" placeholder="1" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Line thickness</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="linestyle.line_width" placeholder="0.5" />
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Loop size</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="linestyle.selfloop_size" placeholder="0.5" />
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-success">
+          Draw
+        </button>
+      </form>
+
+      <br>
+      <iframe src="" name="output" frameborder="0" style="height:2000px; width:100%;"/>
+    </div>
+
+  </body>
+
+</html>
+ 
+
