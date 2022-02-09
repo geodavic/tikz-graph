@@ -13,6 +13,9 @@ import io
 app = Flask(__name__)
 
 str_to_bool = lambda s : True if s=="True" else False
+cap_size = lambda s: min(float(s),2)
+labelmap = lambda s: None if s=="None" else "numbered"
+outer_sep_map = lambda s: None if s=="None" else float(s)
 
 LINE_DEFAULTS = {
     'color':('black',str),
@@ -25,13 +28,14 @@ NODE_DEFAULTS = {
     'shape':('circle',str),
     'line_color':('black',str),
     'fill_color':('black',str),
-    'scale':(0.3,float)
+    'scale':(0.3,cap_size),
+    'outer_sep':(None,outer_sep_map)
 }
 LAYOUT_DEFAULTS = {
-    'align_angle':90,
-    'seed':1,
-    'loops_are_nodes':False,
-    'labels':None
+    'align_angle':(90,float),
+    'seed':(1,int),
+    'loops_are_nodes':(False,str_to_bool),
+    'labels':(None,labelmap),
 }
 
 def serialize_body(body):
@@ -55,9 +59,10 @@ def get_tikz_from_body(body,full_doc=False):
     body = serialize_body(body)
     print(body,flush=True)
   
-    # read line and node style kwargs
+    # read line and node style kwargs as well as set body defaults
     linekwargs = parse_style(body.pop("linestyle",{}),LINE_DEFAULTS)
     nodekwargs = parse_style(body.pop("nodestyle",{}),NODE_DEFAULTS)
+    body = parse_style(body,LAYOUT_DEFAULTS)
 
     # get tikz string
     linestyle = LineStyle(**linekwargs)
