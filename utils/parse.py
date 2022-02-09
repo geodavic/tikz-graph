@@ -7,7 +7,7 @@ SUPPORTED_FORMATS = ['csv']
 def read_adj_mat_txt(txt,fmt='csv',symmetric=False):
     """ Read adjacency matrix from a given text format.
 
-    TODO: error handling when can't be parsed, binarize matrix, assert symmetric
+    TODO: error handling when can't be parsed, binarize matrix, assert symmetric, check connected
     """
     assert fmt in SUPPORTED_FORMATS, f"Unrecognized matrix format {fmt}."
 
@@ -29,6 +29,15 @@ def parse_style(kwargs, defaults):
     return kwargs
 
 
-def svg_to_html(svg_b64):
-    s = f"""<html><p style='text-align:center;'><img src='data:image/svg+xml;base64, {svg_b64}' width="60%" height="auto"/></p></html>"""
+def svg_to_html(svg_b64,tikz=None):
+    s = f"""<html><h3 style="text-align:center">Preview:</h3><p style='text-align:center;'><img style='max-height:400px' src='data:image/svg+xml;base64, {svg_b64}' width="60%" height="auto"/></p>"""
+    if tikz is not None:
+        s+='<h3 style="text-align:center; margin-top:60">TikZ code:</h3>'+tikz_to_html(tikz)
+    s+= "</html>"
     return s
+
+def tikz_to_html(tikz):
+    s = tikz.replace("\n","<br>")
+    pad= 10
+    html = f'<p style="border: 1px solid black;font-family:Courier New; font-size:12; padding-top: {pad}; padding-bottom:{pad}; padding-left: {pad}; padding-right: {pad}"> {s} </p>'
+    return html

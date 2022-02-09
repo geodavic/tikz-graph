@@ -75,6 +75,13 @@ def get_tikz_from_body(body,full_doc=False):
 
     return rval
 
+def delete_files(basename):
+    os.remove(basename+".tex")
+    os.remove(basename+".aux")
+    os.remove(basename+".svg")
+    os.remove(basename+".pdf")
+    os.remove(basename+".log")
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -88,18 +95,7 @@ def tikz():
     """
     
     body = json.loads(request.data.decode("utf-8"))
-    rval = get_tikz_from_body(body)
-
-    return rval
-
-
-@app.route("/tikz_html",methods=["POST"])
-def tikz_html():
-    """ Return the tikz string as html from a form request.
-    """
-    
-    body = dict(request.form)    
-    rval = get_tikz_from_body(body,html=True)
+    rval,_ = get_tikz_from_body(body)
 
     return rval
 
@@ -108,11 +104,11 @@ def tikz_svg():
     """ Return a pdf of the graph from a form request.
     """
     body = dict(request.form)    
-    tikz_str = get_tikz_from_body(body,full_doc=True)
+    tikz_str,tikz_doc = get_tikz_from_body(body,full_doc=True)
 
-    filename = str(abs(hash(tikz_str)))
+    filename = str(abs(hash(tikz_doc)))
     with open(filename+".tex","w") as fp:
-        fp.write(tikz_str)
+        fp.write(tikz_doc)
 
     # compile latex and convert to svg
     # TODO: catch exit codes
@@ -125,11 +121,9 @@ def tikz_svg():
     svg = open(filename+".svg","rb").read()
     svg_encoded = base64.b64encode(svg).decode("utf-8")
 
-    # delete all files (todo)
-    return svg_to_html(svg_encoded)
+    delete_files(filename)
+    return svg_to_html(svg_encoded,tikz=tikz_str)
          
-
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

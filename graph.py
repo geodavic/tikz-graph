@@ -39,7 +39,7 @@ class TikzGrapher:
         docstart = "\\documentclass[tikz]{standalone}\n\\begin{document}" 
         docend = "\\end{document}\n"
         tikz = self.to_tikz(adj_matrix,labels=labels,**layout_kwargs)
-        return docstart+tikz+docend
+        return tikz,docstart+tikz+docend
 
     def node_block(self, node_layout, adj_matrix, labels):
         # get labels 
@@ -58,8 +58,8 @@ class TikzGrapher:
     def line_block(self, edge_layout, adj_matrix):
         linestr = ""
         
-        symmetrized = adj_matrix - adj_matrix.T
-        asym_idx = np.where(symmetrized > 0)  # unidirectional edges
+        symmetrized = adj_matrix + adj_matrix.T
+        asym_idx = np.where(adj_matrix - adj_matrix.T > 0)  # unidirectional edges
         sym_idx = np.nonzero(
             np.triu(adj_matrix * adj_matrix.T)
         )  # bidirectional edges (or self-loops)
