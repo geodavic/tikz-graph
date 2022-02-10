@@ -4,7 +4,7 @@ from io import StringIO
 
 SUPPORTED_FORMATS = ['csv']
 
-def read_adj_mat_txt(txt,fmt='csv',symmetric=False):
+def read_adj_mat_txt(txt,fmt='csv',directed=True):
     """ Read adjacency matrix from a given text format.
 
     TODO: error handling when can't be parsed, binarize matrix, assert symmetric, check connected
@@ -14,8 +14,21 @@ def read_adj_mat_txt(txt,fmt='csv',symmetric=False):
     if fmt == 'csv':
         f = StringIO(txt)
         data = np.array(list(csv.reader(f, delimiter=',')),dtype=np.int64)
-
+    
+    data = process_matrix(data,directed=directed)
     return data
+
+def process_matrix(mat,directed=True):
+    """ Apply post-processing steps to matrix (binarize, assert symmetric, have at least two nodes,etc)
+    """
+    mat = (mat != 0).astype(np.int_)
+    assert mat.shape[0] == mat.shape[1],"Adjacency matrix must be square."
+    if not directed:
+        assert ((mat.T - mat) == np.zeros_like(mat)).all(),"Non-directed graphs must have a symmetric matrix."
+    assert len(mat) > 1, "Graph must have at least two nodes"
+
+
+    return mat
 
 def parse_style(kwargs, defaults):
     """ Parse the nodestyle kwargs, setting default values where nothing
