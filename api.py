@@ -66,7 +66,8 @@ def get_tikz_from_body(body,full_doc=False):
     try:
         adj_mat = read_adj_mat_txt(adj_mat_txt,fmt=fmt,directed=linekwargs['directed'])
     except Exception as e:
-        raise werkzeug.exceptions.BadRequest(e)
+        err = f"Formatting error (unable to read matrix). Please make sure you selected the correct matrix format. ({e})"
+        raise werkzeug.exceptions.BadRequest(err)
 
 
     # get tikz string
