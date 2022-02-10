@@ -67,4 +67,5 @@ def tikz_to_html(tikz):
     s = tikz.replace("\n","<br>")
     pad= 10
     html = f'<p style="border: 1px solid black;font-family:Courier New; font-size:12; padding-top: {pad}; padding-bottom:{pad}; padding-left: {pad}; padding-right: {pad}"> {s} </p>'
+    html += '<h5><i>Tip: if your graph is too small after you paste into your document, adjust the "Scale" parameter under Line Style.</i></h5>'
     return html

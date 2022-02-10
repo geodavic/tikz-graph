@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
   <body>
-    <div class="col-sm-6 col-sm-offset-3">
+    <div class="col-sm-10 col-sm-offset-1">
       <h2> TikZ Graph from Adjacency Matrix </h2> <a href="https://github.com/geodavic/tikz-graph" target="blank_" style="float:right"> View source code </a>
       <br>
       <form id="tikz_form" method="post" action="http://localhost:5000/tikz_svg" target="output">
@@ -24,7 +24,6 @@
             <option value="csv">csv</option>
             <option value="mathematica">Mathematica array ({...})</option>
             <option value="python">Python list ([...])</option>
-            <option value="np">Numpy array (np.array([...]))</option>
           </select>
 
 
@@ -142,6 +141,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Scale</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="scale" placeholder="1" />
+                        </select>
+                    </div>
+                </div>
+
 
             </div>
         </fieldset>
