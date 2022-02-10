@@ -84,7 +84,10 @@ class Layout:
             return -sum_ / 2 + layout[idx]
 
         # TODO: this could be bad if all edges are symetrically laid out
-        pos = -sum(adjacent_vecs)/len(adjacent_vecs)
+        if len(adjacent_vecs):
+            pos = -sum(adjacent_vecs)/len(adjacent_vecs)
+        else:
+            pos = np.array([0,1])
         """
         # get angles between adjacent nodes
         angles = [np.arctan2(v[1], v[0]) for v in adjacent_vecs]

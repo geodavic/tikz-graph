@@ -36,6 +36,7 @@ LAYOUT_DEFAULTS = {
     'seed':(1,int),
     'loops_are_nodes':(False,str_to_bool),
     'labels':(None,labelmap),
+    'scale':(1,float)
 }
 
 def serialize_body(body):
@@ -51,27 +52,37 @@ def get_tikz_from_body(body,full_doc=False):
     """ Get the tikz graph string from the payload.
     """
     # read adjacency matrix text field
-    print(body,flush=True)
     fmt = body.pop("adj_mat_fmt")
-    adj_mat = read_adj_mat_txt(body.pop("adj_mat_txt"),fmt=fmt)
-
-    # separate linestye and nodestyle kwargs
+    adj_mat_txt = body.pop("adj_mat_txt")
     body = serialize_body(body)
     print(body,flush=True)
-  
+
     # read line and node style kwargs as well as set body defaults
     linekwargs = parse_style(body.pop("linestyle",{}),LINE_DEFAULTS)
     nodekwargs = parse_style(body.pop("nodestyle",{}),NODE_DEFAULTS)
     body = parse_style(body,LAYOUT_DEFAULTS)
 
+    # get adjacency matrix
+    try:
+        adj_mat = read_adj_mat_txt(adj_mat_txt,fmt=fmt,directed=linekwargs['directed'])
+    except Exception as e:
+        err = f"Formatting error (unable to read matrix). Please make sure you selected the correct matrix format. ({e})"
+        raise werkzeug.exceptions.BadRequest(err)
+
+
     # get tikz string
     linestyle = LineStyle(**linekwargs)
     nodestyle = NodeStyle(**nodekwargs)
     tikz = TikzGrapher(nodestyle,linestyle)
-    if full_doc:
-        rval = tikz.to_doc(adj_mat,**body)
-    else:
-        rval = tikz.to_tikz(adj_mat,**body)
+
+    try:
+        if full_doc:
+            rval = tikz.to_doc(adj_mat,**body)
+        else:
+            rval = tikz.to_tikz(adj_mat,**body)
+    except Exception as e:
+        err=f"Layout algorithm failed: {e}"
+        raise werkzeug.exceptions.InternalServerError(err)
 
     return rval
 
