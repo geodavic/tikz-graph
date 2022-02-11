@@ -12,7 +12,7 @@ def rotation_matrix(angle):
 class Layout:
     """Base class for any layout object."""
 
-    def __init__(self, align_angle=0, seed=1, scale=1, loops_are_nodes=False):
+    def __init__(self, align_angle=0, seed=None, scale=1, loops_are_nodes=False):
         self.align_angle = 2*math.pi*((align_angle-45)/360)
         self.seed = seed
         self.scale = scale
@@ -144,8 +144,62 @@ class SpringLayout(Layout):
     the edges as springs and runs a physics simulator.
     """
 
+    def _iterate_layout(self, H, max_iter = 50):
+        """ Iterate repeatedly perform the layout until there are no or minimal
+        edge crossings.
+        """
+        if self.seed is not None:
+            return nx.spring_layout(H, center=[0, 0], seed=self.seed, iterations=500)
+        else:
+            layouts = []
+            seed = np.random.randint(2**32)
+            layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=100)
+            num_crossings = self._num_crossings(H,layout)
+            n_iter = 0
+            while n_iter < max_iter:
+                seed = np.random.randint(2**32)
+                layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=100)
+                num_crossings = self._num_crossings(H,layout)
+                if num_crossings == 0:
+                    return layout
+                n_iter += 1
+                layouts.append((layout,num_crossings))
+           
+            layouts = sorted(layouts,key=lambda x:x[1])
+            print("Min crossings found: {}".format(layouts[0][1]),flush=True)
+            return layouts[0][0]
+
+    def _num_crossings(self, H, layout):
+        """ Return number of edge crossings in a given layout.
+        """
+        ncrossings = 0
+        edge_set = list(H.edges)
+        for i in range(len(edge_set)):
+            for j in range(len(edge_set)):
+                if i>j:
+                    edge1 = edge_set[i]
+                    edge2 = edge_set[j]
+
+                    p1,p2 = layout[edge1[0]], layout[edge1[1]]
+                    q1,q2 = layout[edge2[0]], layout[edge2[1]]
+                    if self._intersect(p1,p2,q1,q2):
+                        ncrossings+=1
+        return ncrossings
+
+    def _ccw(self,A,B,C):
+        """ Credit to Bryce Boe for this code.
+        """
+        return (C[1]-A[1]) * (B[0]-A[0]) > (B[1]-A[1]) * (C[0]-A[0])
+
+    def _intersect(self,A,B,C,D):
+        """ Credit to Bryce Boe for this code.
+        """
+        return self._ccw(A,C,D) != self._ccw(B,C,D) and self._ccw(A,B,C) != self._ccw(A,B,D)
+
     def _get_layout(self, H, num_nodes):
-        layout = nx.spring_layout(H, center=[0, 0], seed=self.seed)
+        """ Get layout and translate to centroid.
+        """
+        layout = self._iterate_layout(H)
 
         # translate to centroid of non-self-loop nodes
         centroid = sum([v for k, v in layout.items() if k < num_nodes]) / num_nodes
