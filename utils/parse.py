@@ -38,8 +38,10 @@ def process_matrix(mat,directed=True):
     """
     mat = (mat != 0).astype(np.int_)
     assert mat.shape[0] == mat.shape[1],"Adjacency matrix must be square."
+    """ Decided to take this check out
     if not directed:
         assert ((mat.T - mat) == np.zeros_like(mat)).all(),"Non-directed graphs must have a symmetric matrix."
+    """
     assert len(mat) > 1, "Graph must have at least two nodes"
 
     return mat
