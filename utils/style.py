@@ -43,23 +43,23 @@ class LineStyle:
     of the tikz graph.
     """
 
-    def __init__(self, color="black", directed=True, arrow_mark_location=0.65, line_width=0.1, selfloop_size=1):
+    def __init__(self, color="black", directed=True, arrow_mark_location=0.65, line_width=0.1, selfloop_size=1,arrow_tip=">"):
         self.color = color
         self.directed = directed
         self.arrow_mark_location = arrow_mark_location
         self.line_width = line_width
         self.selfloop_size = selfloop_size
+        self.arrow_tip = arrow_tip
 
     def render_line(self, node1, node2, bend=None):
         """ Tikz code for a line between two named nodes.
         """
         if not self.directed:
             arrow_style = ""
+        elif self.arrow_mark_location == 1:
+            arrow_style = f"[-{self.arrow_tip}]"
         else:
-            if self.arrow_mark_location != 1:
-                arrow_style = "[->-]"
-            else:
-                arrow_style = "[->]"
+            arrow_style = "[ar]"
 
         bend_str = ""
         if bend is not None:
@@ -86,17 +86,20 @@ class LineStyle:
     def scope(self,nodestr):
         """ The scope wrapper for all lines in the drawing.
         """
-        rval = "\\begin{scope}\n "+nodestr+"\n\\end{scope}\n"
-        return rval
+        #rval = "\\begin{scope}\n "+nodestr+"\n\\end{scope}\n"
+        return nodestr
 
     def header(self):
         """ Any required settings/macros outside of tikzpicture environment.
         """
-        if self.arrow_mark_location == 1:
+        if not self.directed:
             return ""
-        elif not self.directed:
-            return ""
+        elif self.arrow_mark_location == 1:
+            return "\\usetikzlibrary{arrows.meta}\n"
         else:
             header = "\\usetikzlibrary{decorations.markings}\n"
-            header += f"\\tikzset{{->-/.style={{decoration={{markings,mark=at position {self.arrow_mark_location} with {{\\arrow{{>}}}}}},postaction={{decorate}}}}}}\n"
+            header += "\\usetikzlibrary{arrows.meta}\n"
+            header += f"\\tikzset{{ar/.style={{decoration={{markings,mark=at position {self.arrow_mark_location} with {{\\arrow{{{self.arrow_tip}}}}}}},postaction={{decorate}}}}}}\n"
             return header
+
+

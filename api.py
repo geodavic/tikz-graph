@@ -23,7 +23,8 @@ LINE_DEFAULTS = {
     'directed':(True,str_to_bool),
     'arrow_mark_location':(1,float),
     'line_width':(0.5,float),
-    'selfloop_size':(0.5,float)
+    'selfloop_size':(0.5,float),
+    'arrow_tip':(">",str)
 }
 NODE_DEFAULTS = {
     'shape':('circle',str),
@@ -88,7 +89,8 @@ def get_tikz_from_body(body,full_doc=False):
     except Exception as e:
         err=f"Layout algorithm failed: {e}"
         raise werkzeug.exceptions.InternalServerError(err)
-
+    
+    print(rval,flush=True)
     return rval
 
 def delete_files(basename):
