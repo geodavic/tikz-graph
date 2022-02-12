@@ -16,13 +16,15 @@ str_to_bool = lambda s : True if s=="True" else False
 cap_size = lambda s: min(float(s),2)
 labelmap = lambda s: None if s=="None" else "numbered"
 outer_sep_map = lambda s: None if s=="None" else float(s)
+seed_map = lambda s: None if s=="" else int(s)
 
 LINE_DEFAULTS = {
     'color':('black',str),
     'directed':(True,str_to_bool),
     'arrow_mark_location':(1,float),
     'line_width':(0.5,float),
-    'selfloop_size':(0.5,float)
+    'selfloop_size':(0.5,float),
+    'arrow_tip':(">",str)
 }
 NODE_DEFAULTS = {
     'shape':('circle',str),
@@ -32,8 +34,8 @@ NODE_DEFAULTS = {
     'outer_sep':(None,outer_sep_map)
 }
 LAYOUT_DEFAULTS = {
-    'align_angle':(90,float),
-    'seed':(1,int),
+    'align_angle':(0,float),
+    'seed':(None,seed_map),
     'loops_are_nodes':(False,str_to_bool),
     'labels':(None,labelmap),
     'scale':(1,float)
@@ -56,6 +58,10 @@ def get_tikz_from_body(body,full_doc=False):
     adj_mat_txt = body.pop("adj_mat_txt")
     body = serialize_body(body)
     print(body,flush=True)
+
+    # if minimizing crossings
+    if not body.pop("min_cross",False):
+        body['seed'] = body['seed'] or 1
 
     # read line and node style kwargs as well as set body defaults
     linekwargs = parse_style(body.pop("linestyle",{}),LINE_DEFAULTS)
@@ -83,7 +89,8 @@ def get_tikz_from_body(body,full_doc=False):
     except Exception as e:
         err=f"Layout algorithm failed: {e}"
         raise werkzeug.exceptions.InternalServerError(err)
-
+    
+    print(rval,flush=True)
     return rval
 
 def delete_files(basename):

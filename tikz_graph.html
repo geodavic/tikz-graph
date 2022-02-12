@@ -135,6 +135,17 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">Arrow tip</label>
+                    <div class="col-xs-6">
+                        <select class='form-control' name="linestyle.arrow_tip" id="linestyle.arrow_tip">
+                        <option value=">">Default</option>
+                        <option value="Latex">LaTeX</option>
+                        <option value="stealth">Stealth</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="name" class="col-xs-6 control-label">Loop size</label>
                     <div class="col-xs-6">
                         <input type="text" class="form-control" name="linestyle.selfloop_size" placeholder="0.5" />
@@ -148,15 +159,27 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="name" class="col-xs-6 control-label">nx seed</label>
+                    <div class="col-xs-6">
+                        <input type="text" class="form-control" name="seed" placeholder="1" />
+                        </select>
+                    </div>
+                </div>
 
 
             </div>
         </fieldset>
         </div>
-        
+
+
         <div style="clear:both">
         <br>
         <br>
+        <input type="checkbox" id="min_cross" name="min_cross" value="on">
+        <label for="min_cross">Beta: Try to minimize crossings (can take longer for large graphs)</label>
+        <br>
+
             <button type="submit" class="btn btn-success">
             Draw
             </button>
