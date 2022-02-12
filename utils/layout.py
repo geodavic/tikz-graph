@@ -153,12 +153,12 @@ class SpringLayout(Layout):
         else:
             layouts = []
             seed = np.random.randint(2**32)
-            layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=100)
+            layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=200)
             num_crossings = self._num_crossings(H,layout)
             n_iter = 0
             while n_iter < max_iter:
                 seed = np.random.randint(2**32)
-                layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=100)
+                layout = nx.spring_layout(H, center=[0, 0], seed=seed, iterations=200)
                 num_crossings = self._num_crossings(H,layout)
                 if num_crossings == 0:
                     return layout
@@ -182,6 +182,10 @@ class SpringLayout(Layout):
 
                     p1,p2 = layout[edge1[0]], layout[edge1[1]]
                     q1,q2 = layout[edge2[0]], layout[edge2[1]]
+
+                    unique_pts = np.unique(np.array([p1,p2,q1,q2]),axis=0)
+                    if len(unique_pts) < 4:
+                        continue
                     if self._intersect(p1,p2,q1,q2):
                         ncrossings+=1
         return ncrossings
