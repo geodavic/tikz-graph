@@ -21,7 +21,7 @@ seed_map = lambda s: None if s=="" else int(s)
 LINE_DEFAULTS = {
     'color':('black',str),
     'directed':(True,str_to_bool),
-    'arrow_mark_location':0.65,float),
+    'arrow_mark_location':(0.65,float),
     'line_width':(0.3,float),
     'selfloop_size':(0.5,float),
     'arrow_tip':(">",str)
