@@ -21,8 +21,8 @@ seed_map = lambda s: None if s=="" else int(s)
 LINE_DEFAULTS = {
     'color':('black',str),
     'directed':(True,str_to_bool),
-    'arrow_mark_location':(1,float),
-    'line_width':(0.5,float),
+    'arrow_mark_location':0.65,float),
+    'line_width':(0.3,float),
     'selfloop_size':(0.5,float),
     'arrow_tip':(">",str)
 }
@@ -31,14 +31,14 @@ NODE_DEFAULTS = {
     'line_color':('black',str),
     'fill_color':('black',str),
     'scale':(0.3,cap_size),
-    'outer_sep':(None,outer_sep_map)
+    'outer_sep':(0,outer_sep_map)
 }
 LAYOUT_DEFAULTS = {
     'align_angle':(0,float),
     'seed':(None,seed_map),
     'loops_are_nodes':(False,str_to_bool),
     'labels':(None,labelmap),
-    'scale':(1,float)
+    'scale':(3,float)
 }
 
 def serialize_body(body):
